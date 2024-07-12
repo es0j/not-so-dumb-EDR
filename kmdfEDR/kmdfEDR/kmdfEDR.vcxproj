@@ -118,6 +118,7 @@
     <ClCompile Include="Callbacks.c" />
     <ClCompile Include="driver.c" />
     <ClCompile Include="FileUtils.c" />
+    <ClCompile Include="ObCallbacks.c" />
     <ClCompile Include="User.c" />
   </ItemGroup>
   <ItemGroup>

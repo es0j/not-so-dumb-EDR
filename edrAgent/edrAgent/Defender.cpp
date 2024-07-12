@@ -1,5 +1,6 @@
 ﻿#include <cstdio>
 #include <iostream>
+#include <windows.h>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -12,7 +13,7 @@
 using namespace System;
 using namespace System::Diagnostics;
 
-void Exec(String^ fname) {
+static BOOL ThreatFound(String^ fname) {
 
     // Create a new ProcessStartInfo object
     ProcessStartInfo^ startInfo = gcnew ProcessStartInfo();
@@ -21,7 +22,7 @@ void Exec(String^ fname) {
     startInfo->FileName = L"C:\\Program Files\\Windows Defender\\MpCmdRun.exe";
 
     // Set arguments (in this case, we execute a simple command)
-    startInfo->Arguments = L"-Scan -ScanType 3 -File " + fname +L" -DisableRemediation -Trace -Level 0x10";
+    startInfo->Arguments = L"-Scan -ScanType 3 -File \"" + fname +L"\" -DisableRemediation -Trace -Level 0x10";
 
     // Redirect standard output and error
     startInfo->RedirectStandardOutput = true;
@@ -53,11 +54,11 @@ void Exec(String^ fname) {
     // Get the exit code (optional)
     int exitCode = process->ExitCode;
     Console::WriteLine("Process exited with code: {0}", exitCode);
-
+    return exitCode == 2;
 }
 
-void Scan(const wchar_t* fname) {
+BOOL DefenderScan(const wchar_t* fname) {
 
     String^ mfname = gcnew String(fname);
-    Exec(mfname);
+    return ThreatFound(mfname);
 }

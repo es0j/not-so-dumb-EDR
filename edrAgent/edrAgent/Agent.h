@@ -4,4 +4,13 @@
 
 #define MESSAGE_SIZE 2048
 
-void Scan(const wchar_t* fname);
+BOOL DefenderScan(const wchar_t* fname);
+
+BOOL VerifyEmbeddedSignature(const wchar_t* binaryPath);
+
+BOOL ListImportedFunctions(const wchar_t* binaryPath);
+
+
+BOOL lookForSeDebugPrivilegeString(const wchar_t* filename);
+
+

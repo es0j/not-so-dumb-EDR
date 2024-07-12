@@ -4,7 +4,7 @@
 #define MESSAGE_SIZE 2048
 #define MAX_PATH 260
 
-void Inject(DWORD target_pid, char *dll_full_path) {
+BOOL Inject(DWORD target_pid, char *dll_full_path) {
     // Opening the process with necessary privileges 
     HANDLE hProcess = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, target_pid);
     if (hProcess == NULL) {
