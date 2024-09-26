@@ -34,7 +34,7 @@ DWORD NTAPI NtAllocateVirtualMemory(
     if (Protect == PAGE_EXECUTE_READWRITE) {
         printf("page RWX detected, protecting device\n");
         // If yes, we notify the user and terminate the process
-        MessageBox(NULL, L"Dude, are you trying to RWX me ?", L"Found u bro", MB_OK);
+        MessageBox(NULL, L"RWX PAGES ARE NOT PERMITTED", L"Blocked By EDR", MB_OK);
         TerminateProcess(GetCurrentProcess(), 0xdeadb33f);
     }
 
@@ -64,7 +64,7 @@ DWORD WINAPI InitHooksThread(LPVOID param) {
 
 // Here is the DllMain of our DLL
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
-    return TRUE;
+    //return TRUE;
     switch (ul_reason_for_call) {
     case DLL_PROCESS_ATTACH: {
         // This DLL will not be loaded by any thread so we simply disable DLL_TRHEAD_ATTACH and DLL_THREAD_DETACH

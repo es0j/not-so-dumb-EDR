@@ -51,7 +51,7 @@ void sCreateProcessNotifyRoutineEx(PEPROCESS parent_process, HANDLE pid, PPS_CRE
 
 
         // Compare the image base of the launched process to the dump_lasss string
-        if (wcsstr(createInfo->ImageFileName->Buffer, L"evil.exe") != NULL) {
+        if (strstr(createInfo->ImageFileName->Buffer, L"evil") != NULL) {
 
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] [NotifyRoutineEx] Process %wZ created\n", processName);
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            PID: %d\n", pid);
@@ -60,12 +60,12 @@ void sCreateProcessNotifyRoutineEx(PEPROCESS parent_process, HANDLE pid, PPS_CRE
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            DOS path: %ws\n", objFileDosDeviceName->Name.Buffer);
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            CommandLine: %ws\n", createInfo->CommandLine->Buffer);
 
-
+            
             if (createInfo->FileOpenNameAvailable && createInfo->ImageFileName) {
                 int analyzer_ret = analyze_binary(objFileDosDeviceName->Name.Buffer);
                 if (analyzer_ret != 0) {
                     DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            State: Denied by StaticAnalyzer\n");
-                    //createInfo->CreationStatus = STATUS_ACCESS_DENIED;
+                    createInfo->CreationStatus = STATUS_ACCESS_DENIED;
                     return;
                 }
                 int injector_ret = inject_dll((int)(intptr_t)pid);
@@ -73,6 +73,7 @@ void sCreateProcessNotifyRoutineEx(PEPROCESS parent_process, HANDLE pid, PPS_CRE
 
                 
             }
+            createInfo->CreationStatus = STATUS_SUCCESS;
         }
     }
     // Logical bug here, if the agent is not running, the driver will always allow the creation of the process
