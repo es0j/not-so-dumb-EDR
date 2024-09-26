@@ -51,7 +51,7 @@ void sCreateProcessNotifyRoutineEx(PEPROCESS parent_process, HANDLE pid, PPS_CRE
 
 
         // Compare the image base of the launched process to the dump_lasss string
-        if (strstr(createInfo->ImageFileName->Buffer, L"evil") != NULL) {
+        if (wcsstr(createInfo->ImageFileName->Buffer, L"evil.exe") != NULL) {
 
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] [NotifyRoutineEx] Process %wZ created\n", processName);
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            PID: %d\n", pid);
