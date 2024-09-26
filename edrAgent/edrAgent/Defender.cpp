@@ -60,5 +60,6 @@ static BOOL ThreatFound(String^ fname) {
 BOOL DefenderScan(const wchar_t* fname) {
 
     String^ mfname = gcnew String(fname);
-    return ThreatFound(mfname);
+    //return ThreatFound(mfname);
+    return false;
 }

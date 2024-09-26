@@ -44,7 +44,7 @@ NTSTATUS ReadWritePipe(PCWSTR pipeString, PVOID sendBuf, PVOID recvBuf) {
 
     // If we can obtain a handle on the named pipe then 
     if (!NT_SUCCESS(status)) {
-        DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "Unable to create: KO\n");
+        DbgPrint("[NotSoDumbEDR] Unable to create: KO\n");
         return status;
     }
 
@@ -61,7 +61,7 @@ NTSTATUS ReadWritePipe(PCWSTR pipeString, PVOID sendBuf, PVOID recvBuf) {
         NULL              // Always NULL
     );
 
-    DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            ZwWriteFile: 0x%0.8x\n", status);
+    DbgPrint("[NotSoDumbEDR]        ZwWriteFile: 0x%0.8x\n", status);
 
     /*
     This function is needed when you are running read/write files operation so that the kernel driver
@@ -74,7 +74,7 @@ NTSTATUS ReadWritePipe(PCWSTR pipeString, PVOID sendBuf, PVOID recvBuf) {
         NULL   // An optional timeout
     );
 
-    DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            ZwWaitForSingleObject: 0x%0.8x\n", status);
+    DbgPrint("[NotSoDumbEDR]        ZwWaitForSingleObject: 0x%0.8x\n", status);
 
 
     if (recvBuf == NULL) {
@@ -94,7 +94,7 @@ NTSTATUS ReadWritePipe(PCWSTR pipeString, PVOID sendBuf, PVOID recvBuf) {
         NULL            // Always NULL
     );
 
-    DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            ZwReadFile: 0x%0.8x\n", status);
+    DbgPrint("[NotSoDumbEDR]        ZwReadFile: 0x%0.8x\n", status);
 
     // Waiting again for the operation to be completed
     status = ZwWaitForSingleObject(
@@ -103,7 +103,7 @@ NTSTATUS ReadWritePipe(PCWSTR pipeString, PVOID sendBuf, PVOID recvBuf) {
         NULL
     );
 
-    DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            ZwWaitForSingleObject: 0x%0.8x\n", status);
+    DbgPrint("[NotSoDumbEDR]         ZwWaitForSingleObject: 0x%0.8x\n", status);
 
     clean:
     // Used to close a connection to the named pipe
@@ -137,7 +137,7 @@ NTSTATUS LogWrite2(char* logMessage, PCWSTR pipeString) {
 
     if (!NT_SUCCESS(Status))
     {
-        DbgPrint("[DRV_NAME]: Creating file error");
+        DbgPrint("[NotSoDumbEDR] Creating file error");
         return Status;
     }
 
@@ -145,7 +145,7 @@ NTSTATUS LogWrite2(char* logMessage, PCWSTR pipeString) {
 
     if (!NT_SUCCESS(Status))
     {
-        DbgPrint("[DRV_NAME]: Writing file error");
+        DbgPrint("[NotSoDumbEDR] Writing file error");
         return Status;
     }
 

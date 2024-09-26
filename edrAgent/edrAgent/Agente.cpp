@@ -17,7 +17,7 @@
 
 
 BOOL allowExecution(wchar_t *target_binary_file) {
-    printf("\n\n[EDR AGENT] Received binary file %ws \n", target_binary_file);
+    printf("\n\n[EDR AGENT 2] Received binary file %ws \n", target_binary_file);
     int res = 0;
 
     BOOL isSeDebugPrivilegeStringPresent = lookForSeDebugPrivilegeString(target_binary_file);
@@ -41,7 +41,7 @@ BOOL allowExecution(wchar_t *target_binary_file) {
 
 void kernelMode() {
 
-    LPCWSTR pipeName = PIPE_NAME;
+    LPCWSTR pipeName = L"\\\\.\\pipe\\dumbedr-analyzer";
     DWORD bytesRead = 0;
     wchar_t target_binary_file[MESSAGE_SIZE] = { 0 };
 
@@ -78,14 +78,21 @@ void kernelMode() {
                 NULL                 // Whether or not the pipe supports overlapped operations
             );
 
-            BOOL allow = allowExecution(target_binary_file);
+            printf("~> Received binary file %ws\n", target_binary_file);
+            int res = 0;
 
+            BOOL allowExec = allowExecution(target_binary_file);
+            
+            
             wchar_t response[MESSAGE_SIZE] = { 0 };
-            if (allow == TRUE) {
+            if (allowExec == TRUE) {
                 swprintf_s(response, MESSAGE_SIZE, L"OK\0");
+                printf("\t\033[32mStaticAnalyzer allows\033[0m\n");
             }
             else {
                 swprintf_s(response, MESSAGE_SIZE, L"KO\0");
+                printf("\n\t\033[31mStaticAnalyzer denies\033[0m\n");
+
             }
 
             DWORD bytesWritten = 0;
@@ -97,6 +104,7 @@ void kernelMode() {
                 &bytesWritten, // Numbers of bytes written
                 NULL           // Whether or not the pipe supports overlapped operations
             );
+
         }
 
         // Disconnect
@@ -122,7 +130,7 @@ const wchar_t* GetWC(const char* c)
 
 int main(int argc,char **argv) {
     if (argc < 2) {
-        printf("Starting agent in kernel\n");
+        printf("Starting agent in kernel \n");
         kernelMode();
     }
     else {

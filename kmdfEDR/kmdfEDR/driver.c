@@ -18,9 +18,13 @@ UNICODE_STRING SYM_LINK = RTL_CONSTANT_STRING(L"\\??\\MyDumbEDR");        // Sym
 
 
 void UnloadMyDumbEDR(_In_ PDRIVER_OBJECT DriverObject) {
-    DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[MyDumbEDR] Unloading routine called\n");
+    DbgPrint("[NotSoDumbEDR] Unloading routine called\n");
     
+
     RemoveCallbacks();
+
+    //RemoveObCallbacks();
+
     // Delete the driver device 
     IoDeleteDevice(DriverObject->DeviceObject);
     // Delete the symbolic link
@@ -32,7 +36,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
     // Prevent compiler error such as unreferenced parameter (error 4)
     UNREFERENCED_PARAMETER(RegistryPath);
 
-    DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] Initializing the EDR's driver v0.02\n");
+    DbgPrint("[NotSoDumbEDR] Initializing the EDR's driver v0.02\n");
 
     // Variable that will store the output of WinAPI functions
     NTSTATUS status;
@@ -55,19 +59,20 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
     );
 
     if (!NT_SUCCESS(status)) {
-        DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] Device creation failed\n");
+        DbgPrint("[NotSoDumbEDR] Device creation failed\n");
         return status;
     }
 
     // Creating the symlink that we will use to contact our driver
     status = IoCreateSymbolicLink(&symlinkName, &deviceName);
     if (!NT_SUCCESS(status)) {
-        DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] Symlink creation failed\n");
+        DbgPrint("[NotSoDumbEDR] Symlink creation failed\n");
         IoDeleteDevice(DeviceObject);
         return status;
     }
 
     InstallCallbacks();
+    //InstallObCallbacks();
     LogWrite("Installed driver");
 
     return 0;

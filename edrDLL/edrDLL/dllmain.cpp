@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "MinHook.h"
-
+#include <stdio.h>
 
 #pragma comment(lib, "libMinHook-x64-v90-mtd.lib")
 
@@ -29,9 +29,10 @@ DWORD NTAPI NtAllocateVirtualMemory(
     ULONG AllocationType,
     ULONG Protect
 ) {
-
+    printf("NtAllocateVirtualMemory called\n");
     // Checks if the program is trying to allocate some memory and protect it with RWX 
     if (Protect == PAGE_EXECUTE_READWRITE) {
+        printf("page RWX detected, protecting device\n");
         // If yes, we notify the user and terminate the process
         MessageBox(NULL, L"Dude, are you trying to RWX me ?", L"Found u bro", MB_OK);
         TerminateProcess(GetCurrentProcess(), 0xdeadb33f);
@@ -44,6 +45,7 @@ DWORD NTAPI NtAllocateVirtualMemory(
 // This function initializes the hooks via the MinHook library
 DWORD WINAPI InitHooksThread(LPVOID param) {
     if (MH_Initialize() != MH_OK) {
+        printf("Fail to init hooks thread\n");
         return -1;
     }
 
@@ -62,11 +64,12 @@ DWORD WINAPI InitHooksThread(LPVOID param) {
 
 // Here is the DllMain of our DLL
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
+    return TRUE;
     switch (ul_reason_for_call) {
     case DLL_PROCESS_ATTACH: {
         // This DLL will not be loaded by any thread so we simply disable DLL_TRHEAD_ATTACH and DLL_THREAD_DETACH
         DisableThreadLibraryCalls(hModule);
-
+        printf("Dll injected\n");
         // Calling WinAPI32 functions from the DllMain is a very bad practice 
         // since it can basically lock the program loading the DLL
         // Microsoft recommends not using any functions here except a few one like 
