@@ -53,7 +53,7 @@ void sCreateProcessNotifyRoutineEx(PEPROCESS parent_process, HANDLE pid, PPS_CRE
         // Compare the image base of the launched process to the dump_lasss string
         if (wcsstr(createInfo->ImageFileName->Buffer, L"evil.exe") != NULL) {
 
-            DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] [NotifyRoutineEx] Process %wZ created\n", processName);
+            DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[NotSoDumbEDR] [NotifyRoutineEx] Process %wZ created\n", processName);
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            PID: %d\n", pid);
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            Created by: %wZ\n", parent_processName);
             DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "            ImageBase: %ws\n", createInfo->ImageFileName->Buffer);
@@ -78,7 +78,7 @@ void sCreateProcessNotifyRoutineEx(PEPROCESS parent_process, HANDLE pid, PPS_CRE
     }
     // Logical bug here, if the agent is not running, the driver will always allow the creation of the process
     else {
-        //DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[MyDumbEDR] Process %wZ killed\n", processName);
+        //DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "[NotSoDumbEDR] Process %wZ killed\n", processName);
     }
 }
 
